@@ -74,12 +74,11 @@ fun BookCard(
                     Spacer(Modifier.height(4.dp))
                     LoanStatus(item, today)
                 }
+                Spacer(Modifier.width(8.dp))
+                BookAction(item, selectedMember, onBorrow, onReturn)
             }
             if (isExpanded) {
                 BookDetails(item.book)
-            }
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                BookAction(item, selectedMember, onBorrow, onReturn)
             }
         }
     }

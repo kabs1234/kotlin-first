@@ -143,6 +143,7 @@ private fun LibraryTopBar(state: LibraryUiState, scrollBehavior: TopAppBarScroll
                 )
             }
         },
+        colors = TopAppBarDefaults.topAppBarColors(scrolledContainerColor = MaterialTheme.colorScheme.surface),
         scrollBehavior = scrollBehavior,
     )
 }
