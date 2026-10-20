@@ -151,7 +151,7 @@ private fun LibraryTopBar(state: LibraryUiState, scrollBehavior: TopAppBarScroll
 private fun AddBookButton(onClick: () -> Unit) {
     ExtendedFloatingActionButton(
         onClick = onClick,
-        icon = { Icon(painterResource(R.drawable.ic_add), contentDescription = null) },
+        icon = { Icon(painterResource(R.drawable.ic_add), contentDescription = "Add book") },
         text = { Text("Add book") },
     )
 }

@@ -1,5 +1,7 @@
 # Library System
 
+> **HW2:** the Android version of this app (Jetpack Compose, Material 3, ViewModel) is in [`android-app/`](android-app/README.md), with features, screenshots and running instructions.
+
 A Kotlin console app that runs a small university library for one simulated month. It loads new books from two publisher feeds, lets students, a professor and a guest borrow and return books, and prints a report with late fees and catalog stats at the end.
 
 Each member type has its own loan limit, loan period and late-fee rule, so the same `borrow` and `returnBook` calls give different results depending on who is borrowing.
