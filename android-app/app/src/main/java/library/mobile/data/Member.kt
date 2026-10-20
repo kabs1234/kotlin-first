@@ -10,8 +10,7 @@ abstract class Member(val id: String, val name: String) : LateFeePolicy {
     abstract val role: String
 
     open fun describe(): String {
-        val bookWord = if (loanLimit == 1) "book" else "books"
-        return "Up to $loanLimit $bookWord for $loanPeriodDays days"
+        return "Up to ${countOf(loanLimit, "book")} for ${countOf(loanPeriodDays, "day")}"
     }
 }
 

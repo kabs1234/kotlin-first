@@ -36,6 +36,7 @@ import library.mobile.ui.components.EmptyState
 import library.mobile.ui.components.MemberSelector
 import library.mobile.ui.components.SectionHeader
 import library.mobile.ui.components.StatCard
+import library.mobile.data.countOf
 import library.mobile.data.formatMoney
 
 class LoansActions(
@@ -138,7 +139,7 @@ private fun ReceiptRow(receipt: Receipt) {
             Text(receipt.loan.book.title, style = MaterialTheme.typography.bodyMedium)
             Text(
                 "Returned on day ${receipt.returnedOnDay}" +
-                    if (receipt.daysLate > 0) ", ${receipt.daysLate} days late" else ", on time",
+                    if (receipt.daysLate > 0) ", ${countOf(receipt.daysLate, "day")} late" else ", on time",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )

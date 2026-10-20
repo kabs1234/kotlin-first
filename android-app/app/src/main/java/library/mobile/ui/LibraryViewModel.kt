@@ -16,6 +16,7 @@ import library.mobile.data.Library
 import library.mobile.data.Member
 import library.mobile.data.Receipt
 import library.mobile.data.SampleData
+import library.mobile.data.countOf
 import library.mobile.data.formatMoney
 import library.mobile.data.loadNewArrivals
 
@@ -101,7 +102,7 @@ class LibraryViewModel : ViewModel() {
     private fun describe(result: BorrowResult): String = when (result) {
         is BorrowResult.Borrowed -> "${result.loan.member.name} borrowed \"${result.loan.book.title}\", due day ${result.loan.dueDay}"
         is BorrowResult.AlreadyOnLoan -> "\"${result.book.title}\" is already with ${result.holder.name}"
-        is BorrowResult.LimitReached -> "${result.member.name} hit the limit of ${result.member.loanLimit} books"
+        is BorrowResult.LimitReached -> "${result.member.name} hit the limit of ${countOf(result.member.loanLimit, "book")}"
         is BorrowResult.UnknownBook -> "No book with ISBN ${result.isbn}"
     }
 
@@ -110,7 +111,7 @@ class LibraryViewModel : ViewModel() {
         return if (receipt.daysLate == 0) {
             "Returned \"$title\" on time"
         } else {
-            "Returned \"$title\" ${receipt.daysLate} days late, fee ${formatMoney(receipt.fee)}"
+            "Returned \"$title\" ${countOf(receipt.daysLate, "day")} late, fee ${formatMoney(receipt.fee)}"
         }
     }
 }

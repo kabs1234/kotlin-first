@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import library.mobile.data.Book
 import library.mobile.data.Genre
 import library.mobile.data.Member
+import library.mobile.data.countOf
 import library.mobile.ui.LibraryUiState
 import library.mobile.ui.components.BookCard
 import library.mobile.ui.components.EmptyState
@@ -88,7 +89,7 @@ private fun CatalogFilters(state: LibraryUiState, actions: CatalogActions) {
                 onCheckedChange = { actions.onAvailableOnlyToggle() },
             )
             Text(
-                "${state.catalog.size} books",
+                countOf(state.catalog.size, "book"),
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
