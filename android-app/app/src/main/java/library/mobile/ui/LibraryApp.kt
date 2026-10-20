@@ -1,6 +1,7 @@
 package library.mobile.ui
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -15,6 +16,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteItem
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
@@ -45,6 +47,7 @@ enum class LibraryTab(val label: String, @param:DrawableRes val icon: Int) {
     STATE("State demo", R.drawable.ic_rotate),
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryApp(viewModel: LibraryViewModel = viewModel()) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -58,22 +61,27 @@ fun LibraryApp(viewModel: LibraryViewModel = viewModel()) {
         viewModel.onMessageShown()
     }
 
+    val navigationType = navigationLayoutType()
     NavigationSuiteScaffold(
-        layoutType = navigationLayoutType(),
-        navigationSuiteItems = {
+        navigationSuiteType = navigationType,
+        navigationItemVerticalArrangement = Arrangement.Center,
+        navigationItems = {
             LibraryTab.entries.forEach { tab ->
-                item(
+                NavigationSuiteItem(
                     selected = tab == selectedTab,
                     onClick = { selectedTab = tab },
                     icon = { Icon(painterResource(tab.icon), contentDescription = null) },
                     label = { Text(tab.label) },
+                    navigationSuiteType = navigationType,
                 )
             }
         },
     ) {
         key(selectedTab) {
+            val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
             TabScaffold(
                 state = state,
+                scrollBehavior = scrollBehavior,
                 snackbarHostState = snackbarHostState,
                 floatingActionButton = {
                     if (selectedTab == LibraryTab.CATALOG) {
@@ -82,7 +90,12 @@ fun LibraryApp(viewModel: LibraryViewModel = viewModel()) {
                 },
             ) { contentPadding ->
                 when (selectedTab) {
-                    LibraryTab.CATALOG -> CatalogScreen(state, rememberCatalogActions(viewModel), contentPadding)
+                    LibraryTab.CATALOG -> CatalogScreen(
+                        state = state,
+                        actions = rememberCatalogActions(viewModel),
+                        contentPadding = contentPadding,
+                        onSearchFocus = { scrollBehavior.collapse() },
+                    )
                     LibraryTab.LOANS -> LoansScreen(state, rememberLoansActions(viewModel), contentPadding)
                     LibraryTab.STATE -> StateDemoScreen(state.viewModelCounter, viewModel::incrementCounter, contentPadding)
                 }
@@ -115,11 +128,11 @@ private fun navigationLayoutType(): NavigationSuiteType {
 @Composable
 private fun TabScaffold(
     state: LibraryUiState,
+    scrollBehavior: TopAppBarScrollBehavior,
     snackbarHostState: SnackbarHostState,
     floatingActionButton: @Composable () -> Unit,
     content: @Composable (PaddingValues) -> Unit,
 ) {
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = { LibraryTopBar(state, scrollBehavior) },
@@ -146,6 +159,11 @@ private fun LibraryTopBar(state: LibraryUiState, scrollBehavior: TopAppBarScroll
         colors = TopAppBarDefaults.topAppBarColors(scrolledContainerColor = MaterialTheme.colorScheme.surface),
         scrollBehavior = scrollBehavior,
     )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+private fun TopAppBarScrollBehavior.collapse() {
+    state.heightOffset = state.heightOffsetLimit
 }
 
 @Composable

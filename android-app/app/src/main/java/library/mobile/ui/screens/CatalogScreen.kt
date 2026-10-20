@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.unit.dp
 import library.mobile.data.Book
 import library.mobile.data.Genre
@@ -42,7 +43,12 @@ class CatalogActions(
 )
 
 @Composable
-fun CatalogScreen(state: LibraryUiState, actions: CatalogActions, contentPadding: PaddingValues) {
+fun CatalogScreen(
+    state: LibraryUiState,
+    actions: CatalogActions,
+    contentPadding: PaddingValues,
+    onSearchFocus: () -> Unit,
+) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(CARD_MIN_WIDTH),
         modifier = Modifier
@@ -53,7 +59,7 @@ fun CatalogScreen(state: LibraryUiState, actions: CatalogActions, contentPadding
         verticalArrangement = Arrangement.spacedBy(12.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        item(span = fullWidth) { CatalogFilters(state, actions) }
+        item(span = fullWidth) { CatalogFilters(state, actions, onSearchFocus) }
         if (state.isLoadingArrivals) {
             item(span = fullWidth) { ArrivalsProgress() }
         }
@@ -74,9 +80,15 @@ fun CatalogScreen(state: LibraryUiState, actions: CatalogActions, contentPadding
 }
 
 @Composable
-private fun CatalogFilters(state: LibraryUiState, actions: CatalogActions) {
+private fun CatalogFilters(state: LibraryUiState, actions: CatalogActions, onSearchFocus: () -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        SearchField(query = state.filter.query, onQueryChange = actions.onQueryChange)
+        SearchField(
+            query = state.filter.query,
+            onQueryChange = actions.onQueryChange,
+            modifier = Modifier.onFocusChanged { focusState ->
+                if (focusState.isFocused) onSearchFocus()
+            },
+        )
         GenreChips(selected = state.filter.genres, onGenreClick = actions.onGenreToggle)
         Row(
             modifier = Modifier.fillMaxWidth(),
